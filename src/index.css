@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --p1: #fb7185;
+  --p2: #38bdf8;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  @apply bg-ink-950 font-sans text-ink-100 antialiased;
+  touch-action: manipulation;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Schermate di gioco: niente selezione del testo né menu contestuali al tocco prolungato. */
+.game-surface {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.safe-top {
+  padding-top: max(env(safe-area-inset-top), 0.5rem);
+}
+.safe-bottom {
+  padding-bottom: max(env(safe-area-inset-bottom), 0.5rem);
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold transition
+      active:scale-[0.97] disabled:opacity-40;
+  }
+  .btn-primary {
+    @apply btn bg-ink-100 text-ink-950 hover:bg-white;
+  }
+  .btn-ghost {
+    @apply btn bg-white/5 text-ink-100 hover:bg-white/10;
+  }
+  .icon-btn {
+    @apply inline-flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-ink-200 transition
+      hover:bg-white/10 active:scale-95;
+  }
+}
+
+/* ───── Animazioni ───── */
+@keyframes pop-in {
+  from {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.anim-pop {
+  animation: pop-in 0.22s var(--ease-out) both;
+}
+
+@keyframes fade-up {
+  from {
+    transform: translateY(12px);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+.anim-fade-up {
+  animation: fade-up 0.35s var(--ease-out) both;
+}
+
+@keyframes draw-stroke {
+  from {
+    stroke-dashoffset: var(--len, 100);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+.anim-draw {
+  stroke-dasharray: var(--len, 100);
+  animation: draw-stroke 0.28s var(--ease-out) both;
+}
+
+@keyframes drop {
+  from {
+    transform: translateY(var(--from, -400%));
+  }
+  to {
+    transform: none;
+  }
+}
+.anim-drop {
+  animation: drop var(--dur, 0.35s) cubic-bezier(0.5, 0, 0.75, 0) both;
+}
+
+@keyframes pulse-ring {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(255, 255, 255, 0);
+  }
+}
+.anim-pulse-ring {
+  animation: pulse-ring 1.2s ease-in-out infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+.anim-blink {
+  animation: blink 1.1s ease-in-out infinite;
+}
+
+/* Carte di Coppie */
+.card-3d {
+  perspective: 600px;
+}
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.35s var(--ease-out);
+}
+.card-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+.card-face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+.card-back {
+  transform: rotateY(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
