@@ -1,5 +1,27 @@
-import { Anchor, CircleDot, Crown, Dices, Disc, Grid2x2, Hash, Layers, MoveVertical, Zap } from 'lucide-react';
-import type { GameDef, GameMode } from './types';
+import {
+  Anchor,
+  Brain,
+  CircleDot,
+  Club,
+  Crown,
+  Dices,
+  Disc,
+  Grid2x2,
+  Hash,
+  Layers,
+  MessagesSquare,
+  MoveVertical,
+  SpellCheck,
+  Swords,
+  WalletCards,
+  Zap,
+} from 'lucide-react';
+import type { GameDef, SectionId } from './types';
+import { Briscola, Tressette } from './CarteItaliane';
+import UltimaCarta from './UltimaCarta';
+import Lettere from './Lettere';
+import Quiz from './quiz/Quiz';
+import Sondaggio from './sondaggio/Sondaggio';
 import Tris from './Tris';
 import QuattroInFila from './QuattroInFila';
 import Dama from './Dama';
@@ -159,13 +181,120 @@ export const GAMES: GameDef[] = [
       'Vince chi affonda per primo tutta la flotta nemica.',
     ],
   },
+  {
+    id: 'briscola',
+    name: 'Briscola',
+    tagline: 'Il classico con le carte napoletane',
+    mode: 'turns',
+    section: 'carte',
+    icon: Swords,
+    tint: 'from-amber-500/30 to-rose-600/25',
+    component: Briscola,
+    rules: [
+      'Mazzo da 40 carte: 3 carte a testa, la carta scoperta sotto il mazzo indica il seme di briscola.',
+      'A turno si gioca una carta, senza obbligo di rispondere al seme. Prende la briscola più alta; se non ci sono briscole, la carta più alta del seme giocato per primo.',
+      'Ordine di forza: Asso, 3, Re, Cavallo, Fante, 7, 6, 5, 4, 2.',
+      'Chi prende pesca per primo e gioca la mano successiva.',
+      'Punti: Asso 11, 3 10, Re 4, Cavallo 3, Fante 2. Su 120 punti vince chi ne fa più di 60 (60 a 60 è pareggio).',
+    ],
+  },
+  {
+    id: 'tressette',
+    name: 'Tressette',
+    tagline: 'Rispondi al seme, il 3 è la carta più forte',
+    mode: 'turns',
+    section: 'carte',
+    icon: Club,
+    tint: 'from-emerald-500/30 to-amber-500/25',
+    component: Tressette,
+    rules: [
+      'Versione a due: 10 carte a testa, le altre restano nel mazzo. Non c’è briscola.',
+      'Si deve rispondere al seme giocato per primo, se lo si ha. Prende la carta più alta di quel seme.',
+      'Ordine di forza: 3, 2, Asso, Re, Cavallo, Fante, 7, 6, 5, 4.',
+      'Dopo ogni presa si pesca una carta a testa (prima chi ha preso) e le carte pescate si vedono.',
+      'Punti: l’Asso vale 1 punto; 2, 3 e figure valgono 1/3; l’ultima presa vale 1 punto. Si contano i punti interi.',
+      'Si giocano più mani: vince chi arriva per primo a 21. (Versione senza accusi.)',
+    ],
+  },
+  {
+    id: 'ultima-carta',
+    name: 'Ultima carta',
+    tagline: 'Scarta per colore o numero, resta senza carte',
+    mode: 'turns',
+    section: 'carte',
+    icon: WalletCards,
+    tint: 'from-rose-500/30 to-sky-500/30',
+    component: UltimaCarta,
+    rules: [
+      '7 carte a testa. Si gioca una carta dello stesso colore o dello stesso numero/simbolo di quella in cima.',
+      'Se non puoi o non vuoi, pesca una carta: poi puoi giocare o passare.',
+      'Salta e Inverti: l’avversario salta il turno. +2: l’avversario pesca 2 carte e salta il turno.',
+      'Jolly: scegli il nuovo colore. Jolly +4: scegli il colore e l’avversario pesca 4 carte e salta il turno.',
+      'Quando hai 2 carte premi “Ultima!” prima di giocare: se resti con una carta senza averlo detto, ne peschi 2.',
+      'Vince chi finisce per primo le carte.',
+    ],
+  },
+  {
+    id: 'lettere',
+    name: 'Lettere',
+    tagline: 'Parole incrociate con le lettere del leggio',
+    mode: 'turns',
+    section: 'parole',
+    icon: SpellCheck,
+    tint: 'from-amber-300/30 to-orange-500/25',
+    component: Lettere,
+    rules: [
+      'Ognuno ha 7 lettere. A turno componi una parola sulla griglia, in orizzontale o in verticale.',
+      'La prima parola passa dalla stella ★; le altre devono incrociare o toccare quelle già presenti.',
+      'Tocca una lettera del leggio e poi una casella; tocca di nuovo la lettera sulla griglia per riprenderla.',
+      'Caselle bonus: 2L e 3L raddoppiano o triplicano la lettera, 2P e 3P la parola. Usare tutte e 7 le lettere vale 30 punti in più.',
+      'Non c’è un dizionario: l’avversario accetta o contesta le parole. Se le contesta, perdi il turno.',
+      'Puoi anche cambiare lettere o passare. La partita finisce quando il sacchetto è vuoto e qualcuno finisce le lettere, o dopo 4 turni di fila senza punti. Le lettere rimaste si sottraggono.',
+    ],
+  },
+  {
+    id: 'quiz',
+    name: 'Quiz',
+    tagline: 'Domande a scelta su 8 materie',
+    mode: 'turns',
+    section: 'parole',
+    icon: Brain,
+    tint: 'from-violet-500/30 to-sky-500/25',
+    component: Quiz,
+    rules: [
+      'Scegliete le materie (cultura generale, storia, geografia, scienze, matematica, italiano, arte e musica, sport) e quante domande a testa.',
+      'A turno rispondete a una domanda con 4 risposte possibili: avete 20 secondi.',
+      'Ogni risposta giusta vale 1 punto. Vince chi ne fa di più.',
+    ],
+  },
+  {
+    id: 'sondaggio',
+    name: 'Il Sondaggio',
+    tagline: 'Indovina le risposte più comuni',
+    mode: 'turns',
+    section: 'parole',
+    icon: MessagesSquare,
+    tint: 'from-indigo-500/30 to-fuchsia-500/25',
+    component: Sondaggio,
+    rules: [
+      'In ogni round c’è una domanda, per esempio “Un animale domestico”, e un tabellone con le 6 risposte più comuni, ognuna con un punteggio.',
+      'Chi apre il round scrive una risposta alla volta: se è nel tabellone si scopre e i punti vanno nel piatto.',
+      'Dopo 3 risposte sbagliate l’avversario ha un solo tentativo per rubare: se indovina, prende tutto il piatto.',
+      'Se scopri tutte le risposte, il piatto è tuo. Si giocano 4 round, chi apre si alterna.',
+      'Le risposte e i punteggi sono stime nostre, non i risultati di un sondaggio reale.',
+    ],
+  },
 ];
 
-export const MODE_INFO: Record<GameMode, { title: string; hint: string }> = {
-  live: { title: 'Faccia a faccia', hint: 'Insieme, in tempo reale, ognuno sulla sua metà schermo' },
-  table: { title: 'Al tavolo', hint: 'Telefono in mezzo, a turni' },
-  turns: { title: 'Passa il telefono', hint: 'A turni, ci si passa il telefono' },
-};
+export const SECTIONS: { id: SectionId; title: string; hint: string }[] = [
+  { id: 'live', title: 'Faccia a faccia', hint: 'Insieme, in tempo reale, ognuno sulla sua metà schermo' },
+  { id: 'table', title: 'Al tavolo', hint: 'Telefono in mezzo, a turni' },
+  { id: 'carte', title: 'Carte', hint: 'Le carte in mano restano segrete: ci si passa il telefono, o si gioca online' },
+  { id: 'parole', title: 'Parole e quiz', hint: 'A turni: si scrive, si risponde, si indovina' },
+  { id: 'turns', title: 'Passa il telefono', hint: 'A turni, ci si passa il telefono' },
+];
+
+export const sectionOf = (g: GameDef): SectionId => g.section ?? g.mode;
 
 export const gameById = (id: string) => GAMES.find((g) => g.id === id);
 

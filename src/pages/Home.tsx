@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { ChevronRight, Globe, Pencil, Trash2 } from 'lucide-react';
-import { GAMES, MODE_INFO } from '../games';
-import type { GameMode } from '../games/types';
+import { GAMES, SECTIONS, sectionOf } from '../games';
 import { PC, playerName, totals, type Score, type Side, type Store } from '../lib/store';
 
 interface Props {
@@ -10,8 +9,6 @@ interface Props {
   onPlay: (id: string) => void;
   onReset: () => void;
 }
-
-const ORDER: GameMode[] = ['live', 'table', 'turns'];
 
 export default function Home({ store, onName, onPlay, onReset }: Props) {
   const total = totals(store.scores);
@@ -64,12 +61,12 @@ export default function Home({ store, onName, onPlay, onReset }: Props) {
         <ChevronRight className="h-5 w-5 text-ink-400 transition group-hover:translate-x-0.5" />
       </button>
 
-      {ORDER.map((mode) => (
-        <section key={mode} className="mt-8">
-          <h2 className="font-display text-lg font-extrabold">{MODE_INFO[mode].title}</h2>
-          <p className="mb-3 text-xs text-ink-400">{MODE_INFO[mode].hint}</p>
+      {SECTIONS.map((sec) => (
+        <section key={sec.id} className="mt-8">
+          <h2 className="font-display text-lg font-extrabold">{sec.title}</h2>
+          <p className="mb-3 text-xs text-ink-400">{sec.hint}</p>
           <div className="grid grid-cols-1 gap-2.5">
-            {GAMES.filter((g) => g.mode === mode).map((g) => {
+            {GAMES.filter((g) => sectionOf(g) === sec.id).map((g) => {
               const sc: Score = store.scores[g.id] ?? [0, 0];
               return (
                 <button

@@ -19,6 +19,8 @@ export interface GameProps {
  */
 export type GameMode = 'table' | 'turns' | 'live';
 
+export type SectionId = 'live' | 'table' | 'carte' | 'parole' | 'turns';
+
 export interface GameDef {
   id: string;
   name: string;
@@ -29,4 +31,6 @@ export interface GameDef {
   /** sfumatura della tessera nel menu */
   tint: string;
   component: ComponentType<GameProps>;
+  /** sezione del menu (se manca, quella della modalità) */
+  section?: SectionId;
 }
