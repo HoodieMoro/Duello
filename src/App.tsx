@@ -6,6 +6,7 @@ import GameScreen from './pages/GameScreen';
 import Lobby from './online/Lobby';
 import Room from './online/Room';
 import { normalizeCode } from './online/roomApi';
+import { CardView, SUITS } from './components/ItalianCard';
 
 /** Navigazione con l'hash (#/dama): funziona su GitHub Pages e col tasto Indietro. */
 function useRoute() {
@@ -35,6 +36,18 @@ export default function App() {
     document.title = game ? `${game.name} · Duello` : online ? 'Online · Duello' : 'Duello';
     window.scrollTo(0, 0);
   }, [game, online]);
+
+  // solo in sviluppo: tutte le carte del mazzo, per controllarne il disegno
+  if (import.meta.env.DEV && route === 'mazzo') {
+    return (
+      <div className="flex flex-wrap gap-2 bg-emerald-950 p-3">
+        {SUITS.flatMap((s) =>
+          Array.from({ length: 10 }, (_, i) => <CardView key={s + i} card={{ s, v: i + 1 }} w={84} />),
+        )}
+        <CardView back w={84} />
+      </div>
+    );
+  }
 
   if (online) {
     const defaultName = store.names[0].trim() ? playerName(store.names, 0) : '';
