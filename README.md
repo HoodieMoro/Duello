@@ -17,6 +17,12 @@ Si apre dal browser, si può aggiungere alla schermata Home come un'app e non se
 | **Coppie** | Al tavolo, a turni: memory con 10 coppie |
 | **Cinque dadi** | Passa il telefono: 3 lanci per turno, foglio punti a due colonne con anteprima dei punti, bonus +35 a 63, 13 turni |
 | **Battaglia navale** | Passa il telefono: flotte nascoste, schermata "non guardare" tra un turno e l'altro |
+| **Briscola** | Carte napoletane, 3 in mano, 120 punti |
+| **Tressette** | Carte napoletane, obbligo di rispondere al seme, a più mani fino a 21 (senza accusi) |
+| **Ultima carta** | Gioco a colori tipo "scarta e resta senza carte", con Salta, +2, Jolly e "Ultima!" |
+| **Lettere** | Parole incrociate su griglia 13×13 con caselle bonus; le parole le approva l'avversario (nessun dizionario) |
+| **Quiz** | 120 domande in 8 materie, 20 secondi per risposta (domande in `src/games/quiz/domande.ts`) |
+| **Il Sondaggio** | Indovina le 6 risposte più comuni; 3 errori e l'altro può rubare (punteggi stimati, in `src/games/sondaggio/domande.ts`) |
 
 Nei giochi "al tavolo" il telefono sta in mezzo: il **Giocatore 1** (rosa) è in basso, il **Giocatore 2** (azzurro)
 in alto con le scritte capovolte. Chi inizia si alterna a ogni rivincita.
@@ -27,18 +33,15 @@ li falserebbe): uno tocca *Gioca online → Crea una stanza* e manda il link o i
 l'altro lo apre ed entra. Si sceglie il gioco e si apre su entrambi i telefoni; rivincite e punteggio sono condivisi.
 Se uno chiude l'app può riaprire lo stesso link e rientra nella partita.
 
-## Pubblicare il sito (una volta sola, ~10 minuti)
+## Il sito
 
-1. Su **github.com** crea un nuovo repository (es. `duello`), **pubblico**, senza README.
-2. Carica il contenuto della cartella `da-caricare-su-github`
-   (dal sito: *Add file → Upload files*, trascinando tutto; la cartella `.github` va caricata:
-   se il Finder la nasconde premi ⌘ + Maiusc + .).
-3. Nel repository vai su **Settings → Pages** e in *Source* scegli **GitHub Actions**.
-4. Vai su **Actions**, abilita i workflow se richiesto, apri **Pubblica sito** → **Run workflow**.
-5. Dopo 1–2 minuti il sito è online su `https://<tuo-utente>.github.io/duello/`.
-   Sul telefono: Condividi → *Aggiungi alla schermata Home*.
+Online su **https://hoodiemoro.github.io/Duello/** (repository `HoodieMoro/Duello`).
+Sul telefono: Condividi → *Aggiungi alla schermata Home*.
 
-Da quel momento ogni modifica caricata nel repository viene pubblicata da sola.
+**Aggiornarlo:** ogni file caricato nel repository viene pubblicato da solo in 1–2 minuti
+(workflow `.github/workflows/main.yml`). Si caricano solo i file cambiati, nella stessa cartella in cui
+stanno qui: sul sito di GitHub entra nella cartella giusta (es. `src` → `games`) → *Add file → Upload files*.
+Non serve ricaricare `node_modules`, `dist` né `.github`.
 
 ## Gioco online: collegare Firebase (una volta sola, ~10 minuti)
 
