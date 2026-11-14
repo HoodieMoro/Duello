@@ -38,10 +38,33 @@ function shuffle<T>(a: T[]): T[] {
   return d;
 }
 
+/** Domande già uscite su questo telefono: si ripescano solo quando le avete viste tutte. */
+const USED_KEY = 'duello:quiz-usate';
+function readUsed(): string[] {
+  try {
+    return JSON.parse(localStorage.getItem(USED_KEY) || '[]');
+  } catch {
+    return [];
+  }
+}
+function markUsed(text: string) {
+  try {
+    const used = readUsed();
+    if (!used.includes(text)) localStorage.setItem(USED_KEY, JSON.stringify([...used, text]));
+  } catch {
+    /* niente memoria: va bene lo stesso */
+  }
+}
+
 function start(st: State): State {
   if (st.phase !== 'setup' || st.cats.length === 0) return st;
   const pool = CATEGORIE.filter((c) => st.cats.includes(c.id)).flatMap((c) => c.domande.map((d) => ({ c, d })));
-  const picked = shuffle(pool).slice(0, Math.min(pool.length - (pool.length % 2), st.perPlayer * 2));
+  const want = Math.min(pool.length - (pool.length % 2), st.perPlayer * 2);
+  const used = new Set(readUsed());
+  // prima le domande mai viste, poi (se non bastano) quelle già uscite
+  const fresh = shuffle(pool.filter(({ d }) => !used.has(d[0])));
+  const old = shuffle(pool.filter(({ d }) => used.has(d[0])));
+  const picked = [...fresh, ...old].slice(0, want);
   const questions: Q[] = picked.map(({ c, d }) => {
     const order = shuffle([0, 1, 2, 3]);
     return { cat: c.id, text: d[0], options: order.map((k) => d[k + 1]), correct: order.indexOf(0) };
@@ -90,6 +113,12 @@ export default function Quiz({ starter, names, onTurn, onEnd }: GameProps) {
   const idx = s?.idx ?? 0;
   const answered = !!s?.answer;
   const askedAt = s?.askedAt ?? 0;
+
+  // segna la domanda come vista su questo telefono
+  const shownText = s?.phase === 'play' ? s.questions[s.idx]?.text : undefined;
+  useEffect(() => {
+    if (shownText) markUsed(shownText);
+  }, [shownText]);
 
   // orologio per la barra del tempo
   useEffect(() => {
@@ -145,7 +174,10 @@ export default function Quiz({ starter, names, onTurn, onEnd }: GameProps) {
                 }`}
               >
                 <span className="text-xl">{c.emoji}</span>
-                <span className="min-w-0 flex-1 leading-tight">{c.nome}</span>
+                <span className="min-w-0 flex-1 leading-tight">
+                  {c.nome}
+                  <span className="block text-[11px] font-normal text-ink-500">{c.domande.length} domande</span>
+                </span>
                 {on && <Check className="h-4 w-4 shrink-0" />}
               </button>
             );

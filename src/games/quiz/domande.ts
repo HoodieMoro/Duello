@@ -11,7 +11,11 @@ export interface Categoria {
   domande: Domanda[];
 }
 
-export const CATEGORIE: Categoria[] = [
+import { EXTRA_1 } from './domande-extra-1';
+import { EXTRA_2 } from './domande-extra-2';
+import { NUOVE_CATEGORIE } from './domande-nuove';
+
+const BASE: Categoria[] = [
   {
     id: 'generale',
     nome: 'Cultura generale',
@@ -350,4 +354,10 @@ export const CATEGORIE: Categoria[] = [
       ['Nel rugby a 15, quanti punti vale una meta?', '5', '3', '7', '6'],
     ],
   },
+];
+
+/** Tutte le materie, con le domande aggiuntive. */
+export const CATEGORIE: Categoria[] = [
+  ...BASE.map((c) => ({ ...c, domande: [...c.domande, ...(EXTRA_1[c.id] ?? []), ...(EXTRA_2[c.id] ?? [])] })),
+  ...NUOVE_CATEGORIE,
 ];
